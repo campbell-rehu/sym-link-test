@@ -1,0 +1,1 @@
+/Users/campbellrehu/dev/sym-link-test/source-folder/file2.txt
