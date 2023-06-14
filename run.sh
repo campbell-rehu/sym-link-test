@@ -4,8 +4,19 @@ src="$1"
 target="$2"
 dryRun="$3"
 
+exclude_dirs=(".git")
+
 if [ "$#" -ge 2 ]; then
-    find "$src" -mindepth 1 -type d | awk -v src="$src" '{gsub(src"/?", "", $0); print}' | while read -r dir; do
+    exclude=()
+
+    # Build the exclude options for find command
+    for dir in "${exclude_dirs[@]}"; do
+        exclude+=(-not -path "$src/$dir/*" -not -path "$src/$dir")
+    done
+
+    echo "Exclude options: ${exclude[@]}"
+
+    find "$src" -mindepth 1 -type d "${exclude[@]}" | awk -v src="$src" '{gsub(src"/?", "", $0); print}' | while read -r dir; do
         if [ -n "$dryRun" ]; then
             echo "DryRun: mkdir -p \"$target/$dir\""
         else
@@ -14,7 +25,7 @@ if [ "$#" -ge 2 ]; then
         fi
     done
 
-    find "$src" -type f | awk -v src="$src" '{gsub(src"/?", "", $0); print}' | while read -r file; do
+    find "$src" -type f "${exclude[@]}" | awk -v src="$src" '{gsub(src"/?", "", $0); print}' | while read -r file; do
         if [ -n "$dryRun" ]; then
             echo "DryRun: ln -s \"$src/$file\" \"$target/$file\""
         else
