@@ -27,10 +27,10 @@ if [ "$#" -ge 2 ]; then
 
     find "$src" -type f "${exclude[@]}" | awk -v src="$src" '{gsub(src"/?", "", $0); print}' | while read -r file; do
         if [ -n "$dryRun" ]; then
-            echo "DryRun: ln -s \"$src/$file\" \"$target/$file\""
+            echo "DryRun: ln -sf \"$src/$file\" \"$target/$file\""
         else
             # Create symbolic links in the corresponding directory
-            ln -s "$src/$file" "$target/$file"
+            ln -sf "$src/$file" "$target/$file"
         fi
     done
 else
