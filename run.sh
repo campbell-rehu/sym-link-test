@@ -36,6 +36,8 @@ process_files() {
                     mkdir -p "$(dirname "$target/$rel_path")"
                     cp "$file" "$target/$rel_path"
                 fi
+            else
+                echo "Skipping $file. File already exists in $target/$rel_path"
             fi
         else
             # Create a symlink
